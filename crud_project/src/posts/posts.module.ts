@@ -13,6 +13,6 @@ import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
     TypeOrmModule.forFeature([Post])
   ],
   controllers: [PostsController],
-  providers: [PostsService]
+  providers: [PostsService],
 })
 export class PostsModule {}
