@@ -1,10 +1,13 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.useGlobalInterceptors(
+  new ClassSerializerInterceptor(app.get(Reflector)), // This hides password automatically
+);
   // Apply global validation pipe validating incoming requests bodies automatically
   app.useGlobalPipes(
     new ValidationPipe({

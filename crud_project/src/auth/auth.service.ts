@@ -13,7 +13,9 @@ export class AuthService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private jwtService : JwtService,
-  ) {}
+  ) {
+    //  bcrypt.hash('123456', 10).then(console.log);
+  }
 
   private async hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, 10);
@@ -96,6 +98,20 @@ export class AuthService {
     };
   }
 
+  //Find the current User by Id
+  async getUserById(userId: number){
+    const user = await this.usersRepository.findOne({
+      where:{id: userId},
+    });
+
+    if(!user){
+      throw new UnauthorizedException('User not found');
+    }
+
+    const {password, ...result} = user;
+    return result;
+  }
+
   async refreshToken(refreshToken: string){
     try{
         const payload = this.jwtService.verify(refreshToken,{
@@ -151,7 +167,7 @@ export class AuthService {
 
     return this.jwtService.sign(payload,{
         secret: 'refresh_secret',
-        expiresIn : '15m',
+        expiresIn : '7d',
     });
   }
 }
