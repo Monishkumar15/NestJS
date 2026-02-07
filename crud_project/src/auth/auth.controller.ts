@@ -7,6 +7,7 @@ import { CurrentUser } from './decorators/current-user.decorators';
 import { Roles } from './decorators/roles.decorators';
 import { UserRole } from './entities/User.entity';
 import { RolesGuard } from './guards/roles-guard';
+import { LoginThrottlerGuard } from './guards/login-throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -18,6 +19,7 @@ export class AuthController {
         return this.authService.register(registerDto);
     }
 
+    @UseGuards(LoginThrottlerGuard)
     @Post('login')
     login(@Body() loginDto : LoginDto){
         return this.authService.login(loginDto);
@@ -41,7 +43,7 @@ export class AuthController {
     // Create admin route
 
     @Post('create-admin')
-    @Roles(UserRole.USER)
+    @Roles(UserRole.ADMIN)
     @UseGuards(JwtAuthGuard, RolesGuard)
     createAdmin(@Body() RegisterDto : RegisterDto){
         return this.authService.createAdmin(RegisterDto);

@@ -21,7 +21,9 @@ export class RolesGuard implements CanActivate{
    //next method => router.post()
     
     canActivate(context: ExecutionContext): boolean  {
-      
+        
+        //retrive the roles metadata set by the roles decorator
+        
         const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(
             ROLS_KEY,[
                 context.getHandler(), //method level metadata
