@@ -9,20 +9,17 @@ import { CurrentUser } from 'src/auth/decorators/current-user.decorators';
 import { Roles } from 'src/auth/decorators/roles.decorators';
 import { User, UserRole } from 'src/auth/entities/User.entity';
 import { RolesGuard } from 'src/auth/guards/roles-guard';
+import { FindPostsQueryDto } from './dto/find-posts-query.dto';
+import { PaginatedResponse } from 'src/common/interfaces/paginated-response.interface';
 
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  async findAll(@Query('search') search?: string): Promise<PostEntity[]> {  
-    const extractAllPosts =await this.postsService.findAll();
-    if (search) {
-      return extractAllPosts.filter((singlePost) =>
-        singlePost.title.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-    return extractAllPosts;
+  async findAll(@Query() query?: FindPostsQueryDto): Promise<PaginatedResponse<PostEntity>> {  
+    return this.postsService.findAll(query || {});
+    
   }
 
     @Get(':id')
